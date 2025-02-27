@@ -18,6 +18,7 @@ import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/use/ws";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { createServer } from "http";
+import { initDB } from "./app/common/services/database.service";
 
 // const pubsub = new PubSub();
 
@@ -34,17 +35,13 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URI as string)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((err) => console.error("MongoDB Connection Error:", err));
 
 const typeDefs = mergeTypeDefs([userTypeDef, messageTypeDef]);
 const resolvers = mergeResolvers([userResolvers, messageResolvers]);
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 async function startServer() {
+  await initDB();
   const httpServer = createServer(app);
   const wsServer = new WebSocketServer({
     server: httpServer,
@@ -85,6 +82,7 @@ async function startServer() {
 
   httpServer.listen(4000, () => {
     console.log(`Server ready at http://localhost:4000/graphql`);
+    process.exit(0);
   });
   app.get("/", (req, res) => {
     res.json({ message: "Server is running" });

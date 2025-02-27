@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-// Define types for the state
 interface MessageType {
   content: string;
   id: string;
@@ -15,7 +14,7 @@ interface UserType {
   id?: string;
   name?: string;
   email?: string;
-  [key: string]: any; // To allow additional properties if needed
+  [key: string]: any;
 }
 
 interface ChatState {
