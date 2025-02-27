@@ -35,13 +35,14 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
+ initDB();
 
 const typeDefs = mergeTypeDefs([userTypeDef, messageTypeDef]);
 const resolvers = mergeResolvers([userResolvers, messageResolvers]);
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
+
 async function startServer() {
-  await initDB();
   const httpServer = createServer(app);
   const wsServer = new WebSocketServer({
     server: httpServer,
